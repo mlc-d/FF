@@ -1,14 +1,14 @@
-package repository
+package user_repo
 
 import (
 	"database/sql"
 	"time"
 
-	"gitlab.com/mlc-d/ff/pkg/entity"
+	"gitlab.com/mlc-d/ff/pkg/user"
 )
 
 type UserRepo interface {
-	Register(u *entity.User) (*int64, error)
+	Register(u *user.User) (*int64, error)
 }
 
 type userRepo struct {
@@ -21,7 +21,7 @@ func NewUserRepo(db *sql.DB) UserRepo {
 	}
 }
 
-func (ur *userRepo) Register(u *entity.User) (*int64, error) {
+func (ur *userRepo) Register(u *user.User) (*int64, error) {
 	res, err := ur.db.Exec(`insert into users (nick, password, role_id, created_at) values (?, ?, ?, ?)`,
 		u.Nick,
 		u.Password,
