@@ -1,6 +1,7 @@
 package user_service
 
 import (
+	"log"
 	"regexp"
 	"strings"
 
@@ -12,6 +13,10 @@ import (
 )
 
 const (
+	Dev = iota
+	Admin
+	Mod
+	Anon
 	AllowedChars = `[\p{L}\p{N}]`
 )
 
@@ -46,6 +51,7 @@ func (us userService) Register(u *user.User) (*int64, error) {
 	if err != nil {
 		return nil, err
 	}
+	u.RoleID = Anon // every new user is registered with 'anon' role
 	return us.repo.Register(u)
 }
 func (us userService) Login(u *user.User) error {
@@ -67,7 +73,9 @@ func (us userService) checkNick(nick string) error {
 			return errs.ErrInvalidNick
 		}
 	}
-	if len(nick) < 4 || len(nick) > 20 {
+	log.Printf("nick: %s length: %d\n", nick, len(nick))
+	log.Printf("nick: %s length: %d\n", nick, len(s))
+	if len(s) < 4 || len(s) > 25 {
 		return errs.ErrNickLength
 	}
 	return nil

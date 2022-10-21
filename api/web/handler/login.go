@@ -17,10 +17,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	err = userService.Login(user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`logged in!`))
 }
