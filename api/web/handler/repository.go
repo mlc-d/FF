@@ -1,13 +1,9 @@
 package handler
 
 import (
-	"database/sql"
-
-	"gitlab.com/mlc-d/ff/db"
-	user_repo "gitlab.com/mlc-d/ff/pkg/user/repository"
+	user_service "gitlab.com/mlc-d/ff/pkg/user/service"
 )
 
 var (
-	userRepo         = user_repo.NewUserRepo(sqlDB)
-	sqlDB    *sql.DB = db.GetDB()
+	userService = user_service.NewUserService()
 )

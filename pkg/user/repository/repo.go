@@ -9,6 +9,7 @@ import (
 
 type UserRepo interface {
 	Register(u *user.User) (*int64, error)
+	GetPassword(nick string) (string, error)
 }
 
 type userRepo struct {
@@ -36,4 +37,14 @@ func (ur *userRepo) Register(u *user.User) (*int64, error) {
 		return nil, err
 	}
 	return &id, nil
+}
+
+func (ur *userRepo) GetPassword(nick string) (string, error) {
+	var passwordFromDB string
+	err := ur.db.QueryRow(`select password from users where nick = ?`, nick).
+		Scan(&passwordFromDB)
+	if err != nil {
+		return "", err
+	}
+	return passwordFromDB, nil
 }

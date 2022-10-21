@@ -12,4 +12,5 @@ func registerRoutes(mux *chi.Mux) {
 		w.Write([]byte(`test`))
 	})
 	mux.Post("/api/user", handler.RegisterUser)
+	mux.Post("/login", handler.Login)
 }
