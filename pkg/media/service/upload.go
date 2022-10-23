@@ -28,7 +28,7 @@ func buildFileName(name, ext string) string {
 
 // UploadFile saves file to disk. If the file already exists, it skips that task and just return
 // the hash of the file
-func UploadFile(file *multipart.FileHeader) (filename string, err error) {
+func (ms *mediaService) uploadFile(file *multipart.FileHeader) (filename string, err error) {
 	src, err := file.Open()
 	if err != nil {
 		return "", err
@@ -37,6 +37,11 @@ func UploadFile(file *multipart.FileHeader) (filename string, err error) {
 
 	md5sum, err := hash.Md5Sum(src)
 	if err != nil {
+		return "", err
+	}
+
+	isBlacklisted, err := ms.repo.IsBlacklisted(md5sum)
+	if err != nil || isBlacklisted {
 		return "", err
 	}
 

@@ -43,8 +43,5 @@ func (ur *userRepo) GetPassword(nick string) (string, error) {
 	var passwordFromDB string
 	err := ur.db.QueryRow(`select password from users where nick = ?`, nick).
 		Scan(&passwordFromDB)
-	if err != nil {
-		return "", err
-	}
-	return passwordFromDB, nil
+	return passwordFromDB, err
 }
