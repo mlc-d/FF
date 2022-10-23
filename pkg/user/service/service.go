@@ -1,7 +1,6 @@
 package user_service
 
 import (
-	"log"
 	"regexp"
 	"strings"
 
@@ -73,8 +72,6 @@ func (us userService) checkNick(nick string) error {
 			return errs.ErrInvalidNick
 		}
 	}
-	log.Printf("nick: %s length: %d\n", nick, len(nick))
-	log.Printf("nick: %s length: %d\n", nick, len(s))
 	if len(s) < 4 || len(s) > 25 {
 		return errs.ErrNickLength
 	}
