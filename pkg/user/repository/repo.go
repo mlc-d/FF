@@ -4,7 +4,12 @@ import (
 	"database/sql"
 	"time"
 
+	"gitlab.com/mlc-d/ff/db"
 	"gitlab.com/mlc-d/ff/pkg/user"
+)
+
+var (
+	sqlDB = db.GetDB()
 )
 
 type UserRepo interface {
@@ -16,9 +21,9 @@ type userRepo struct {
 	db *sql.DB
 }
 
-func NewUserRepo(db *sql.DB) UserRepo {
+func NewUserRepo() UserRepo {
 	return &userRepo{
-		db: db,
+		db: sqlDB,
 	}
 }
 

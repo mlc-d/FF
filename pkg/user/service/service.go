@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"strings"
 
-	"gitlab.com/mlc-d/ff/db"
 	"gitlab.com/mlc-d/ff/pkg/errs"
 	"gitlab.com/mlc-d/ff/pkg/user"
 	user_repo "gitlab.com/mlc-d/ff/pkg/user/repository"
@@ -20,8 +19,7 @@ const (
 )
 
 var (
-	sqlDB    = db.GetDB()
-	userRepo = user_repo.NewUserRepo(sqlDB)
+	userRepo = user_repo.NewUserRepo()
 )
 
 type UserService interface {
