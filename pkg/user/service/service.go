@@ -15,6 +15,7 @@ const (
 	Admin
 	Mod
 	Anon
+
 	AllowedChars = `[\p{L}\p{N}]`
 )
 
@@ -25,6 +26,7 @@ var (
 type UserService interface {
 	Register(u *user.User) (*int64, error)
 	Login(u *user.User) error
+	CheckPasswordByNick(nick, password string) error
 	// Logout()
 }
 
@@ -52,11 +54,15 @@ func (us userService) Register(u *user.User) (*int64, error) {
 	return us.repo.Register(u)
 }
 func (us userService) Login(u *user.User) error {
-	passwordFromDB, err := us.repo.GetPassword(u.Nick)
+	return us.CheckPasswordByNick(u.Nick, u.Password)
+}
+
+func (us userService) CheckPasswordByNick(nick, password string) error {
+	passwordFromDB, err := us.repo.GetPassword(nick)
 	if err != nil {
 		return err
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(u.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(password))
 	if err != nil {
 		return errs.ErrWrongPassword
 	}

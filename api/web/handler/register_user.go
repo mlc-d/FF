@@ -8,14 +8,14 @@ import (
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
-	user := new(user.User)
-	err := json.NewDecoder(r.Body).Decode(user)
+	u := new(user.User)
+	err := json.NewDecoder(r.Body).Decode(u)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`cannot decode json payload`))
 		return
 	}
-	id, err := userService.Register(user)
+	id, err := userService.Register(u)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

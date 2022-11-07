@@ -23,7 +23,7 @@ func mediaTypeOrDefault(header textproto.MIMEHeader) string {
 }
 
 // buildFileName returns the join between "name" and "ext"
-// e.g name: "landscape", ext: "png" --> "landscape.png"
+// e.g. name: "landscape", ext: "png" --> "landscape.png"
 func buildFileName(name, ext string) string {
 	return name + "." + ext
 }
@@ -55,12 +55,13 @@ func (ms *mediaService) uploadFile(file *multipart.FileHeader) (*int64, error) {
 
 	isBlacklisted, err := ms.repo.IsBlacklisted(md5sum)
 	if err != nil || isBlacklisted {
+		// wether
 		return nil, err
 	}
 
 	filename := buildFileName(md5sum, ext)
 
-	// with this flags, we try to create the file. If it already exists,
+	// with these flags, we try to create the file. If it already exists,
 	// an error is returned
 	dst, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0666)
 	if err != nil {
@@ -78,7 +79,7 @@ func (ms *mediaService) uploadFile(file *multipart.FileHeader) (*int64, error) {
 		return nil, err
 	}
 
-    // save information to database
+	// save information to database
 	id, err := ms.repo.Insert(md5sum, ext, time.Now())
 	if err != nil {
 		return nil, err

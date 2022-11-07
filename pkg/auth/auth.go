@@ -1,25 +1,36 @@
 package auth
 
-import user_service "gitlab.com/mlc-d/ff/pkg/user/service"
+import (
+	"fmt"
+	"time"
 
-type Service interface {
-	Authenticate(name, password string) error
-}
-
-var (
-	userService = user_service.NewUserService()
+	"github.com/lestrrat-go/jwx/v2/jwa"
+	"github.com/lestrrat-go/jwx/v2/jwt"
+	"gitlab.com/mlc-d/ff/pkg/errs"
 )
 
-type authService struct {
-	userService user_service.UserService
-}
-
-func NewAuthService() Service {
-	return &authService{
-		userService: userService,
+// buildPartialPayload instantiates a new *payload with the given fields
+func buildPartialPayload(userID *int64, userRole *uint8) (*payload, error) {
+	if userID == nil || userRole == nil {
+		return nil, errs.ErrInvalidPayload
 	}
+	return &payload{
+		UserID:   userID,
+		UserRole: userRole,
+	}, nil
 }
 
-func (as *authService) Authenticate(name, password string) error {
-	return nil
+const (
+	issuer = "gitlab.com/mlc-d"
+)
+
+func BuildToken(userID *int64, userRole *uint8) (string, error) {
+
+	signedToken, err := jwt.Sign(t, jwt.WithKey(jwa.HS256, []byte("hey")))
+	if err != nil {
+		return "", nil
+	}
+	fmt.Println(string(signedToken[:]))
+
+	return "", nil
 }

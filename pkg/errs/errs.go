@@ -8,4 +8,6 @@ var (
 	ErrInvalidNick   = errors.New("invalid character(s)")
 
 	ErrInvalidFileFormat = errors.New("invalid file format")
+
+	ErrInvalidPayload = errors.New("invalid payload (values cannot be null)")
 )
