@@ -32,12 +32,11 @@ func getKeys() *jwkSet {
 		return keys
 	}
 	// create a new RSA Key
-	v, err := rsa.GenerateKey(rand.Reader, *bitSize)
+	rawRSAPrivateKey, err := rsa.GenerateKey(rand.Reader, *bitSize)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	rawRSAPrivateKey := v
-	rawRSAPublicKey := v.PublicKey
+	rawRSAPublicKey := rawRSAPrivateKey.PublicKey
 
 	{ // set fields for private key
 		keys.private, err = jwk.FromRaw(rawRSAPrivateKey)
@@ -73,8 +72,8 @@ func getKeys() *jwkSet {
 }
 
 const (
-	privateKeyFilename = "jwt"
-	publicKeyFilename  = "jwt.pub"
+	privateKeyFilename = "rsa_jwt"
+	publicKeyFilename  = "rsa_jwt.pub"
 )
 
 // saveKeysToDisk creates two files to store the private and public part of a RSA key.
