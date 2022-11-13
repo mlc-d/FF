@@ -15,12 +15,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`cannot decode json payload`))
 		return
 	}
-	err = userService.Login(u)
+	id, role, err := userService.Login(u)
 	if err != nil {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(err.Error()))
 		return
 	}
+	t, err := authService.CreateToken(id, role)
+	authCookie := &http.Cookie{
+		Name:  "jwt",
+		Value: string(t),
+	}
+	http.SetCookie(w, authCookie)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`logged in!`))
 }

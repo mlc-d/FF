@@ -13,7 +13,7 @@ type jwtRepo struct {
 	keys *jwkSet
 }
 
-func new() JWTRepo {
+func newJWTRepo() JWTRepo {
 	var jr jwtRepo
 	jr.start()
 	return &jr

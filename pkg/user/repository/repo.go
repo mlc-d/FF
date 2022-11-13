@@ -13,8 +13,8 @@ var (
 )
 
 type UserRepo interface {
-	Register(u *user.User) (*int64, error)
-	GetPassword(nick string) (string, error)
+	Register(u *user.User) (*int64, *uint8, error)
+	GetPassword(nick string) (*int64, *uint8, string, error)
 }
 
 type userRepo struct {
@@ -27,7 +27,7 @@ func NewUserRepo() UserRepo {
 	}
 }
 
-func (ur *userRepo) Register(u *user.User) (*int64, error) {
+func (ur *userRepo) Register(u *user.User) (*int64, *uint8, error) {
 	res, err := ur.db.Exec(`insert into users (nick, password, role_id, created_at) values (?, ?, ?, ?)`,
 		u.Nick,
 		u.Password,
@@ -35,18 +35,20 @@ func (ur *userRepo) Register(u *user.User) (*int64, error) {
 		time.Now().UTC(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	id, err := res.LastInsertId()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return &id, nil
+	return &id, &u.RoleID, nil
 }
 
-func (ur *userRepo) GetPassword(nick string) (string, error) {
+func (ur *userRepo) GetPassword(nick string) (*int64, *uint8, string, error) {
 	var passwordFromDB string
-	err := ur.db.QueryRow(`select password from users where nick = ?`, nick).
-		Scan(&passwordFromDB)
-	return passwordFromDB, err
+	var id int64
+	var role uint8
+	err := ur.db.QueryRow(`select id, role_id, password from users where nick = ?`, nick).
+		Scan(&id, &role, &passwordFromDB)
+	return &id, &role, passwordFromDB, err
 }

@@ -24,9 +24,9 @@ var (
 )
 
 type UserService interface {
-	Register(u *user.User) (*int64, error)
-	Login(u *user.User) error
-	CheckPasswordByNick(nick, password string) error
+	Register(u *user.User) (*int64, *uint8, error)
+	Login(u *user.User) (*int64, *uint8, error)
+	checkPasswordByNick(nick, password string) (*int64, *uint8, error)
 	// Logout()
 }
 
@@ -40,33 +40,33 @@ func NewUserService() UserService {
 	}
 }
 
-func (us userService) Register(u *user.User) (*int64, error) {
+func (us userService) Register(u *user.User) (*int64, *uint8, error) {
 	err := us.checkNick(u.Nick)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	u.Nick = strings.ToLower(u.Nick)
 	u.Password, err = us.saltPassword(u.Password)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	u.RoleID = Anon // every new user is registered with 'anon' role
 	return us.repo.Register(u)
 }
-func (us userService) Login(u *user.User) error {
-	return us.CheckPasswordByNick(u.Nick, u.Password)
+func (us userService) Login(u *user.User) (*int64, *uint8, error) {
+	return us.checkPasswordByNick(u.Nick, u.Password)
 }
 
-func (us userService) CheckPasswordByNick(nick, password string) error {
-	passwordFromDB, err := us.repo.GetPassword(nick)
+func (us userService) checkPasswordByNick(nick, password string) (*int64, *uint8, error) {
+	id, role, passwordFromDB, err := us.repo.GetPassword(nick)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(password))
 	if err != nil {
-		return errs.ErrWrongPassword
+		return nil, nil, errs.ErrWrongPassword
 	}
-	return nil
+	return id, role, nil
 }
 
 func (us userService) checkNick(nick string) error {

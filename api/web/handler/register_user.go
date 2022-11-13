@@ -15,7 +15,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`cannot decode json payload`))
 		return
 	}
-	id, err := userService.Register(u)
+	id, _, err := userService.Register(u)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

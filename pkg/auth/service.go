@@ -1,25 +1,22 @@
 package auth
 
-import "github.com/lestrrat-go/jwx/v2/jwt"
+import (
+	"bytes"
+	"errors"
+	"github.com/lestrrat-go/jwx/v2/jwa"
+	"github.com/lestrrat-go/jwx/v2/jws"
+)
 
 type KeyService interface {
 	CreateToken(userID *int64, userRole *uint8) ([]byte, error)
-	VerifyToken(t *jwt.Token) error
+	VerifyToken(t []byte) error
 }
 
-var repo = new()
+var repo = newJWTRepo()
 
 type keyService struct {
 	repo JWTRepo
 }
-
-// func (ks *keyService) start() {
-// 	ks.repo.start()
-// }
-
-// func (ks *keyService) stop() {
-// 	ks.repo.stop()
-// }
 
 func (ks *keyService) CreateToken(userID *int64, userRole *uint8) ([]byte, error) {
 	p := payload{
@@ -29,13 +26,19 @@ func (ks *keyService) CreateToken(userID *int64, userRole *uint8) ([]byte, error
 	return ks.repo.create(p)
 }
 
-func (ks *keyService) VerifyToken(t *jwt.Token) error {
+func (ks *keyService) VerifyToken(t []byte) error {
+	v, err := jws.Verify(t, jws.WithKey(jwa.RS256, keys.public))
+	if err != nil {
+		return err
+	}
+	if !bytes.Equal(t, v) {
+		return errors.New("invalid token")
+	}
 	return nil
 }
 
-func NewKeyService() KeyService {
+func NewJWTService() KeyService {
 	var ks keyService
 	ks.repo = repo
-	// ks.start()
 	return &ks
 }

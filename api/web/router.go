@@ -3,7 +3,7 @@ package web
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/jwtauth"
+	"log"
 	"net/http"
 	"os"
 )
@@ -11,7 +11,6 @@ import (
 type Server struct {
 	router *chi.Mux
 	port   string
-	jwt    *jwtauth.JWTAuth
 }
 
 const (
@@ -26,6 +25,8 @@ func NewServer() *Server {
 	if server != nil {
 		return server
 	}
+	server = new(Server)
+	log.Println(server)
 	server.router = chi.NewRouter()
 	server.router.Use(middleware.Logger)
 
@@ -33,10 +34,13 @@ func NewServer() *Server {
 	if server.port == "" {
 		server.port = DefaultPort
 	}
+	registerRoutes(server.router, authenticationRoutes)
 	return server
 }
 
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {}
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.router.ServeHTTP(w, r)
+}
 
 func (s *Server) GetPort() string {
 	return s.port

@@ -20,7 +20,7 @@ type jwkSet struct {
 }
 
 var (
-	keys *jwkSet
+	keys *jwkSet = new(jwkSet)
 
 	bitSize = flag.Int("bits", 3072, "size in bits of the rsa key")
 )
@@ -28,10 +28,10 @@ var (
 // getKeys singleton function to initialize the [keys] variable, or to return its
 // current value.
 func getKeys() *jwkSet {
-	if keys.private != nil && keys.public != nil {
+	if keys.private != nil || keys.public != nil {
 		return keys
 	}
-	// create a new RSA Key
+	// create a newJWTRepo RSA Key
 	rawRSAPrivateKey, err := rsa.GenerateKey(rand.Reader, *bitSize)
 	if err != nil {
 		log.Fatalln(err)
