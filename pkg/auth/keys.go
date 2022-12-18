@@ -13,22 +13,22 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
-// jwkSet holds the public and private rsa keys.
-type jwkSet struct {
-	public  jwk.Key
-	private jwk.Key
+// JwkSet holds the Public and Private rsa keys.
+type JwkSet struct {
+	Public  jwk.Key
+	Private jwk.Key
 }
 
 var (
-	keys *jwkSet = new(jwkSet)
+	keys *JwkSet = new(JwkSet)
 
 	bitSize = flag.Int("bits", 3072, "size in bits of the rsa key")
 )
 
-// getKeys singleton function to initialize the [keys] variable, or to return its
+// GetKeys singleton function to initialize the [keys] variable, or to return its
 // current value.
-func getKeys() *jwkSet {
-	if keys.private != nil || keys.public != nil {
+func GetKeys() *JwkSet {
+	if keys.Private != nil || keys.Public != nil {
 		return keys
 	}
 	// create a newJWTRepo RSA Key
@@ -38,28 +38,28 @@ func getKeys() *jwkSet {
 	}
 	rawRSAPublicKey := rawRSAPrivateKey.PublicKey
 
-	{ // set fields for private key
-		keys.private, err = jwk.FromRaw(rawRSAPrivateKey)
+	{ // set fields for Private key
+		keys.Private, err = jwk.FromRaw(rawRSAPrivateKey)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		err = keys.private.Set(jwk.AlgorithmKey, jwa.RS256)
+		err = keys.Private.Set(jwk.AlgorithmKey, jwa.RS256)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		err = keys.private.Set(jwk.KeyIDKey, "private-key")
+		err = keys.Private.Set(jwk.KeyIDKey, "Private-key")
 	}
 
-	{ // set fields for public key
-		keys.public, err = jwk.FromRaw(rawRSAPublicKey)
+	{ // set fields for Public key
+		keys.Public, err = jwk.FromRaw(rawRSAPublicKey)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		err = keys.public.Set(jwk.AlgorithmKey, jwa.RS256)
+		err = keys.Public.Set(jwk.AlgorithmKey, jwa.RS256)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		err = keys.public.Set(jwk.KeyIDKey, "public-key")
+		err = keys.Public.Set(jwk.KeyIDKey, "Public-key")
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -76,7 +76,7 @@ const (
 	publicKeyFilename  = "rsa_jwt.pub"
 )
 
-// saveKeysToDisk creates two files to store the private and public part of a RSA key.
+// saveKeysToDisk creates two files to store the Private and Public part of a RSA key.
 func saveKeysToDisk(privKey *rsa.PrivateKey, pubKey *rsa.PublicKey) error {
 	// TODO: handle in case files already exists
 	priv, err := os.OpenFile(privateKeyFilename, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600) // (rw-------)

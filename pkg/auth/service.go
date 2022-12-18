@@ -27,7 +27,7 @@ func (ks *keyService) CreateToken(userID *int64, userRole *uint8) ([]byte, error
 }
 
 func (ks *keyService) VerifyToken(t []byte) error {
-	v, err := jws.Verify(t, jws.WithKey(jwa.RS256, keys.public))
+	v, err := jws.Verify(t, jws.WithKey(jwa.RS256, keys.Public))
 	if err != nil {
 		return err
 	}

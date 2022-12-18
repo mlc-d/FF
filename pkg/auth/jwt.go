@@ -35,7 +35,7 @@ func createToken(p payload) (*jwt.Token, error) {
 }
 
 func signToken(t *jwt.Token) ([]byte, error) {
-	signedToken, err := jwt.Sign(*t, jwt.WithKey(jwa.RS256, keys.private))
+	signedToken, err := jwt.Sign(*t, jwt.WithKey(jwa.RS256, keys.Private))
 	if err != nil {
 		return nil, err
 	}

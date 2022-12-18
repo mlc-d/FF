@@ -10,7 +10,7 @@ type JWTRepo interface {
 }
 
 type jwtRepo struct {
-	keys *jwkSet
+	keys *JwkSet
 }
 
 func newJWTRepo() JWTRepo {
@@ -20,12 +20,12 @@ func newJWTRepo() JWTRepo {
 }
 
 func (jr *jwtRepo) start() {
-	jr.keys = getKeys()
+	jr.keys = GetKeys()
 }
 
 // func (jr *jwtRepo) stop() {
-// 	jr.keys.private = nil
-// 	jr.keys.public = nil
+// 	jr.keys.Private = nil
+// 	jr.keys.Public = nil
 // }
 
 func (jr *jwtRepo) create(p payload) ([]byte, error) {

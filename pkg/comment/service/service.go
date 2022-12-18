@@ -5,10 +5,12 @@ import (
 
 	"gitlab.com/mlc-d/ff/pkg/comment"
 	comment_repo "gitlab.com/mlc-d/ff/pkg/comment/repo"
+	media_service "gitlab.com/mlc-d/ff/pkg/media/service"
 )
 
 var (
 	commentRepo = comment_repo.NewCommentRepo()
+	mediaRepo   = media_service.NewMediaService()
 )
 
 type CommentService interface {
@@ -16,18 +18,23 @@ type CommentService interface {
 }
 
 type commentService struct {
-	repo comment_repo.CommentRepo
+	repo  comment_repo.CommentRepo
+	media media_service.MediaService
 }
 
 func NewCommentService() CommentService {
 	return &commentService{
-		repo: commentRepo,
+		repo:  commentRepo,
+		media: mediaRepo,
 	}
 }
 
 func (cs *commentService) Post(c *comment.Comment) (*int64, error) {
 	c.CreatedAt = time.Now().UTC()
 	c.Color = cs.pickColor()
+	if c.Media.File != nil {
+		cs.media.Upload(c.Media)
+	}
 	return cs.repo.Post(c)
 }
 

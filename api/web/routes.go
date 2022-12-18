@@ -22,17 +22,20 @@ var (
 			pattern: "/register",
 			handler: handler.RegisterUser,
 		},
+
+		{
+			method:  "POST",
+			pattern: "/login",
+			handler: handler.Login,
+		},
+	}
+	protectedRoutes routes = []*route{
 		{
 			method:  "GET",
 			pattern: "/api/users",
 			handler: func(writer http.ResponseWriter, request *http.Request) {
 				_, _ = writer.Write([]byte(`test`))
 			},
-		},
-		{
-			method:  "POST",
-			pattern: "/login",
-			handler: handler.Login,
 		},
 	}
 )
