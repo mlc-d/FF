@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"gitlab.com/mlc-d/ff/pkg/auth"
-	"gitlab.com/mlc-d/jam"
+	"gitlab.com/mlc-d/go-jam"
 	"log"
 	"net/http"
 	"os"
@@ -46,6 +46,7 @@ func NewServer() *Server {
 		panic(err)
 	}
 
+	// TODO: refactor this code to create a proper protected sub router.
 	protected := chi.NewRouter()
 	protected.Use(jam.Verifier(j))
 	protected.Use(jam.Authenticator)
