@@ -1,24 +1,13 @@
-package handler
+package protected
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"gitlab.com/mlc-d/ff/pkg/comment"
-	"gitlab.com/mlc-d/ff/pkg/comment/service"
 )
 
-type CreateComment struct {
-	service comment_service.CommentService
-}
-
-func NewCreateComment() *CreateComment {
-	return &CreateComment{
-		service: commentService,
-	}
-}
-
-func (c *CreateComment) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func CreateComment(w http.ResponseWriter, r *http.Request) {
 	cm := new(comment.Comment)
 
 	err := r.ParseMultipartForm(4194304)

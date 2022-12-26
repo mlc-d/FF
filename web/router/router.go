@@ -3,8 +3,7 @@ package web
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"gitlab.com/mlc-d/ff/pkg/auth"
-	"gitlab.com/mlc-d/go-jam"
+	"gitlab.com/mlc-d/ff/web/api"
 	"log"
 	"net/http"
 	"os"
@@ -32,33 +31,12 @@ func NewServer() *Server {
 	server.router = chi.NewRouter()
 	server.router.Use(middleware.Logger)
 
-	_ = auth.NewJWTService()
-	keys := auth.GetKeys()
-
-	j, err := jam.New(
-		jam.RS256,
-		jam.DefaultLookupOptions,
-		keys.Private,
-		keys.Public,
-		jam.TokenFromCookie,
-		jam.TokenFromHeader)
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO: refactor this code to create a proper protected sub router.
-	protected := chi.NewRouter()
-	protected.Use(jam.Verifier(j))
-	protected.Use(jam.Authenticator)
-	registerRoutes(protected, protectedRoutes)
-
-	server.router.Mount("/protected", protected)
+	server.router.Mount("/api", api.Router())
 
 	server.port = os.Getenv("PORT")
 	if server.port == "" {
 		server.port = DefaultPort
 	}
-	registerRoutes(server.router, authenticationRoutes)
 	return server
 }
 

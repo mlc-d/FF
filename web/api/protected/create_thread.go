@@ -1,7 +1,8 @@
-package handler
+package protected
 
 import (
 	"encoding/json"
+	"gitlab.com/mlc-d/go-jam"
 	"net/http"
 
 	"gitlab.com/mlc-d/ff/pkg/thread"
@@ -24,6 +25,10 @@ func CreateThread(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("invalid data"))
 		return
 	}
+
+	_, claims, err := jam.FromContext(r.Context())
+	userID := claims["id"].(int64)
+	t.UserID = userID
 
 	t.Media.File = file
 

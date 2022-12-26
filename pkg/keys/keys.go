@@ -1,4 +1,4 @@
-package auth
+package keys
 
 import (
 	"crypto/rand"
@@ -20,7 +20,7 @@ type JwkSet struct {
 }
 
 var (
-	keys *JwkSet = new(JwkSet)
+	keys = new(JwkSet)
 
 	bitSize = flag.Int("bits", 3072, "size in bits of the rsa key")
 )
@@ -76,32 +76,36 @@ const (
 	publicKeyFilename  = "rsa_jwt.pub"
 )
 
-// saveKeysToDisk creates two files to store the Private and Public part of a RSA key.
-func saveKeysToDisk(privKey *rsa.PrivateKey, pubKey *rsa.PublicKey) error {
+// saveKeysToDisk creates two files to store the Private and Public part of an RSA key.
+func saveKeysToDisk(privateKey *rsa.PrivateKey, publicKey *rsa.PublicKey) error {
 	// TODO: handle in case files already exists
-	priv, err := os.OpenFile(privateKeyFilename, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600) // (rw-------)
+	var privateKeyFile, publicKeyFile *os.File
+	privateKeyFile, err := os.OpenFile(privateKeyFilename, os.O_RDWR|os.O_CREATE, 0600) // (rw-------)
 	if err != nil {
 		return err
 	}
-	pub, err := os.OpenFile(publicKeyFilename, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0644) // (rw-r--r--)
+	publicKeyFile, err = os.OpenFile(publicKeyFilename, os.O_RDWR|os.O_CREATE, 0644) // (rw-r--r--)
 	if err != nil {
 		return err
 	}
 
-	privKeyBytes := x509.MarshalPKCS1PrivateKey(privKey)
-	privKeyPem := pem.EncodeToMemory(
+	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
+	privateKeyPem := pem.EncodeToMemory(
 		&pem.Block{
 			Type:  "RSA PRIVATE KEY",
-			Bytes: privKeyBytes,
+			Bytes: privateKeyBytes,
 		},
 	)
-	publicKeyBytes := x509.MarshalPKCS1PublicKey(pubKey)
+	publicKeyBytes := x509.MarshalPKCS1PublicKey(publicKey)
 	pubKeyPem := pem.EncodeToMemory(&pem.Block{
 		Type:  "RSA PUBLIC KEY",
 		Bytes: publicKeyBytes,
 	})
 
-	_, err = priv.Write(privKeyPem)
-	_, err = pub.Write(pubKeyPem)
+	_, err = privateKeyFile.Write(privateKeyPem)
+	if err != nil {
+		return err
+	}
+	_, err = publicKeyFile.Write(pubKeyPem)
 	return err
 }
