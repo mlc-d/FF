@@ -6,13 +6,13 @@ import (
 )
 
 type Media struct {
-	ID            int64  `json:"id,omitempty"`
-	Hash          string `json:"hash,omitempty"`
+	ID            int64
+	Hash          string
 	File          *multipart.FileHeader
-	URL           string    `json:"url,omitempty"`
-	ThumbnailURL  string    `json:"thumbnail_url,omitempty"`
-	TypeID        uint8     `json:"type_id,omitempty"`
-	Extension     string    `json:"extension,omitempty"`
-	IsBlacklisted bool      `json:"is_blacklisted,omitempty"`
-	CreatedAt     time.Time `json:"created_at,omitempty"`
+	URL           string
+	ThumbnailURL  string
+	TypeID        uint8
+	Extension     string
+	IsBlacklisted bool
+	CreatedAt     time.Time
 }
