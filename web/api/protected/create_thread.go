@@ -2,14 +2,13 @@ package protected
 
 import (
 	"encoding/json"
+	"gitlab.com/mlc-d/ff/dto"
 	"gitlab.com/mlc-d/go-jam"
 	"net/http"
-
-	"gitlab.com/mlc-d/ff/pkg/thread"
 )
 
 func CreateThread(w http.ResponseWriter, r *http.Request) {
-	t := thread.New()
+	t := new(dto.Thread)
 
 	err := r.ParseMultipartForm(4194304)
 	_, file, err := r.FormFile("file")

@@ -13,5 +13,8 @@ var (
 func Router() *chi.Mux {
 	router.Use(jam.Verifier(internal.JWTService))
 	router.Use(jam.Authenticator)
+
+	router.Post("/thread", CreateThread)
+
 	return router
 }

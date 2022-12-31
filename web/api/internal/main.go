@@ -2,7 +2,7 @@ package internal
 
 import (
 	keys2 "gitlab.com/mlc-d/ff/pkg/keys"
-	user_service "gitlab.com/mlc-d/ff/pkg/user/service"
+	user_service "gitlab.com/mlc-d/ff/pkg/user"
 	"gitlab.com/mlc-d/go-jam"
 )
 

@@ -1,33 +1,32 @@
-package user_repo
+package internal
 
 import (
 	"database/sql"
 	"time"
 
 	"gitlab.com/mlc-d/ff/db"
-	"gitlab.com/mlc-d/ff/pkg/user"
 )
 
 var (
 	sqlDB = db.GetDB()
 )
 
-type UserRepo interface {
-	Register(u *user.User) (*int64, *uint8, error)
+type Repo interface {
+	Register(u *User) (*int64, *uint8, error)
 	GetPassword(nick string) (*int64, *uint8, string, error)
 }
 
-type userRepo struct {
+type repo struct {
 	db *sql.DB
 }
 
-func NewUserRepo() UserRepo {
-	return &userRepo{
+func NewRepo() Repo {
+	return &repo{
 		db: sqlDB,
 	}
 }
 
-func (ur *userRepo) Register(u *user.User) (*int64, *uint8, error) {
+func (ur *repo) Register(u *User) (*int64, *uint8, error) {
 	res, err := ur.db.Exec(`insert into users (nick, password, role_id, created_at) values (?, ?, ?, ?)`,
 		u.Nick,
 		u.Password,
@@ -44,7 +43,7 @@ func (ur *userRepo) Register(u *user.User) (*int64, *uint8, error) {
 	return &id, &u.RoleID, nil
 }
 
-func (ur *userRepo) GetPassword(nick string) (*int64, *uint8, string, error) {
+func (ur *repo) GetPassword(nick string) (*int64, *uint8, string, error) {
 	var passwordFromDB string
 	var id int64
 	var role uint8

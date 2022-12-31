@@ -2,13 +2,12 @@ package protected
 
 import (
 	"encoding/json"
+	"gitlab.com/mlc-d/ff/dto"
 	"net/http"
-
-	"gitlab.com/mlc-d/ff/pkg/comment"
 )
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
-	cm := new(comment.Comment)
+	cm := new(dto.Comment)
 
 	err := r.ParseMultipartForm(4194304)
 	_, file, err := r.FormFile("file")

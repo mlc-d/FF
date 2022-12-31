@@ -1,10 +1,8 @@
-package comment_repo
+package internal
 
 import (
 	"database/sql"
-
 	"gitlab.com/mlc-d/ff/db"
-	"gitlab.com/mlc-d/ff/pkg/comment"
 )
 
 const (
@@ -16,7 +14,7 @@ var (
 )
 
 type CommentRepo interface {
-	Post(c *comment.Comment) (*int64, error)
+	Post(c *Comment) (*int64, error)
 }
 
 type commentRepo struct {
@@ -29,7 +27,7 @@ func NewCommentRepo() CommentRepo {
 	}
 }
 
-func (cr *commentRepo) Post(c *comment.Comment) (*int64, error) {
+func (cr *commentRepo) Post(c *Comment) (*int64, error) {
 	result, err := cr.db.Exec(insert, c.ThreadID, c.UserID, c.Tag, c.Content, c.UniqueID, c.IsOP, c.Color)
 	if err != nil {
 		return nil, err

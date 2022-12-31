@@ -1,4 +1,4 @@
-package media
+package internal
 
 import (
 	"mime/multipart"
@@ -16,13 +16,3 @@ type Media struct {
 	IsBlacklisted bool      `json:"is_blacklisted,omitempty"`
 	CreatedAt     time.Time `json:"created_at,omitempty"`
 }
-
-const (
-	Image    = "img"
-	Gif      = "gif"
-	Video    = "vid"
-	Document = "doc"
-	Youtube  = "yt"
-	// Vimeo = "vimeo"
-	// Bitchute = "bitchute"
-)

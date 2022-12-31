@@ -18,11 +18,14 @@ create table if not exists users
 
 create table if not exists topics
 (
-    id         tinyint unsigned not null auto_increment,
-    short_name varchar(5)       not null unique,
-    name       varchar(25)      not null unique,
-    created_by integer unsigned not null,
-    created_at timestamp default current_timestamp,
+    id              tinyint unsigned not null auto_increment,
+    short_name      varchar(5)       not null unique,
+    name            varchar(25)      not null unique,
+    thumbnail_url   varchar(50)      not null unique,
+    is_nsfw         boolean          not null default false,
+    maximum_threads tinyint          not null default 64,
+    created_by      integer unsigned not null,
+    created_at      timestamp                 default current_timestamp,
     primary key (id)
 );
 

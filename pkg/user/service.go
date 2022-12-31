@@ -1,12 +1,12 @@
-package user_service
+package user
 
 import (
+	"gitlab.com/mlc-d/ff/dto"
+	"gitlab.com/mlc-d/ff/pkg/user/internal"
 	"regexp"
 	"strings"
 
 	"gitlab.com/mlc-d/ff/pkg/errs"
-	"gitlab.com/mlc-d/ff/pkg/user"
-	user_repo "gitlab.com/mlc-d/ff/pkg/user/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,48 +16,52 @@ const (
 	Mod
 	Anon
 
-	AllowedChars = `[\p{L}\p{N}]`
+	AllowedChars = `[\p{L}\p{N}]` // Only alphanumeric characters are allowed
 )
 
 var (
-	userRepo = user_repo.NewUserRepo()
+	userRepo = internal.NewRepo()
 )
 
-type UserService interface {
-	Register(u *user.User) (*int64, *uint8, error)
-	Login(u *user.User) (*int64, *uint8, error)
+type Service interface {
+	Register(u *dto.User) (*int64, *uint8, error)
+	Login(u *dto.User) (*int64, *uint8, error)
 	checkPasswordByNick(nick, password string) (*int64, *uint8, error)
-	// Logout()
 }
 
-type userService struct {
-	repo user_repo.UserRepo
+type service struct {
+	repo internal.Repo
 }
 
-func NewUserService() UserService {
-	return &userService{
+func NewUserService() Service {
+	return &service{
 		repo: userRepo,
 	}
 }
 
-func (us userService) Register(u *user.User) (*int64, *uint8, error) {
-	err := us.checkNick(u.Nick)
+func (us service) Register(u *dto.User) (*int64, *uint8, error) {
+
+	user := new(internal.User)
+	user.Nick = u.Nick
+	user.Password = u.Password
+
+	err := us.checkNick(user.Nick)
 	if err != nil {
 		return nil, nil, err
 	}
-	u.Nick = strings.ToLower(u.Nick)
-	u.Password, err = us.saltPassword(u.Password)
+	user.Nick = strings.ToLower(user.Nick)
+	user.Password, err = us.saltPassword(user.Password)
 	if err != nil {
 		return nil, nil, err
 	}
-	u.RoleID = Anon // every new user is registered with 'anon' role
-	return us.repo.Register(u)
+	user.RoleID = Anon // every new user is registered with 'anon' role
+	return us.repo.Register(user)
 }
-func (us userService) Login(u *user.User) (*int64, *uint8, error) {
+func (us service) Login(u *dto.User) (*int64, *uint8, error) {
 	return us.checkPasswordByNick(u.Nick, u.Password)
 }
 
-func (us userService) checkPasswordByNick(nick, password string) (*int64, *uint8, error) {
+func (us service) checkPasswordByNick(nick, password string) (*int64, *uint8, error) {
 	id, role, passwordFromDB, err := us.repo.GetPassword(nick)
 	if err != nil {
 		return nil, nil, err
@@ -69,7 +73,7 @@ func (us userService) checkPasswordByNick(nick, password string) (*int64, *uint8
 	return id, role, nil
 }
 
-func (us userService) checkNick(nick string) error {
+func (us service) checkNick(nick string) error {
 	s := []rune(nick)
 	for i := 0; i < len(s); i++ {
 		if ok, _ := regexp.MatchString(AllowedChars, string(s[i])); !ok {
@@ -82,7 +86,7 @@ func (us userService) checkNick(nick string) error {
 	return nil
 }
 
-func (us userService) saltPassword(password string) (string, error) {
+func (us service) saltPassword(password string) (string, error) {
 	salted, err := bcrypt.GenerateFromPassword([]byte(password), 5)
 	if err != nil {
 		return "", nil

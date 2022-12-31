@@ -1,4 +1,4 @@
-package media_service
+package media
 
 import (
 	"io"
@@ -30,7 +30,7 @@ func buildFileName(name, ext string) string {
 
 // UploadFile saves file to disk. If the file already exists, it skips that task and just return
 // the hash of the file
-func (ms *mediaService) uploadFile(file *multipart.FileHeader) (*int64, error) {
+func (ms *service) uploadFile(file *multipart.FileHeader) (*int64, error) {
 	_, ext, _ := strings.Cut(mediaTypeOrDefault(file.Header), "/")
 	valid := false
 	for _, v := range allowedFormats {

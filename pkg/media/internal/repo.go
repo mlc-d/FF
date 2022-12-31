@@ -1,4 +1,4 @@
-package media_repo
+package internal
 
 import (
 	"database/sql"
