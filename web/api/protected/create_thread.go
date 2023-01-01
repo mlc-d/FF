@@ -8,9 +8,14 @@ import (
 )
 
 func CreateThread(w http.ResponseWriter, r *http.Request) {
-	t := new(dto.Thread)
+	t := dto.NewThread()
 
 	err := r.ParseMultipartForm(4194304)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
 	_, file, err := r.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

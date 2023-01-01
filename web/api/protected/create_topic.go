@@ -8,13 +8,13 @@ import (
 )
 
 func CreateTopic(w http.ResponseWriter, r *http.Request) {
-	t := new(dto.Topic)
+	t := dto.NewTopic()
 
 	err := r.ParseMultipartForm(4194304)
 	_, file, err := r.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("invalid data"))
+		_, _ = w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -26,7 +26,8 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, claims, err := jam.FromContext(r.Context())
-	userID := claims["id"].(int64)
+
+	userID := int64(claims["id"].(float64))
 	t.CreatedBy = userID
 
 	t.Media.File = file

@@ -22,3 +22,10 @@ type Comment struct {
 type Comments []*Comment
 
 type Color uint8
+
+func NewComment() *Comment {
+	m := new(Media)
+	return &Comment{
+		Media: m,
+	}
+}

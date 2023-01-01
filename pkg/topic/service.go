@@ -2,8 +2,10 @@ package topic
 
 import (
 	"gitlab.com/mlc-d/ff/dto"
+	"gitlab.com/mlc-d/ff/pkg/errs"
 	"gitlab.com/mlc-d/ff/pkg/media"
 	"gitlab.com/mlc-d/ff/pkg/topic/internal"
+	"time"
 )
 
 type Service interface {
@@ -33,6 +35,12 @@ func (ts *service) Create(t *dto.Topic) (*int64, error) {
 	topic.ShortName = t.ShortName
 	topic.IsNSFW = t.IsNSFW
 	topic.MaximumThreads = t.MaximumThreads
+	topic.CreatedBy = t.CreatedBy
+	topic.CreatedAt = time.Now()
+
+	if validateMaximumThreads(topic.MaximumThreads) {
+		return nil, errs.ErrInvalidThreadsCap
+	}
 
 	mediaID, err := ts.ms.Upload(t.Media)
 	if err != nil {
@@ -43,4 +51,13 @@ func (ts *service) Create(t *dto.Topic) (*int64, error) {
 
 	id, err := ts.tr.Create(topic)
 	return id, err
+}
+
+const (
+	MaximumThreadsGlobal = 128
+	MinimumThreadsGlobal = 12
+)
+
+func validateMaximumThreads(mt uint16) bool {
+	return mt > MaximumThreadsGlobal || mt < MinimumThreadsGlobal
 }

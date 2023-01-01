@@ -17,3 +17,10 @@ type Thread struct {
 	Sticky    bool      `json:"sticky,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 }
+
+func NewThread() *Thread {
+	m := new(Media)
+	return &Thread{
+		Media: m,
+	}
+}

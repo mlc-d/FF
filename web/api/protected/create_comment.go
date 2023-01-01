@@ -7,7 +7,7 @@ import (
 )
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
-	cm := new(dto.Comment)
+	cm := dto.NewComment()
 
 	err := r.ParseMultipartForm(4194304)
 	_, file, err := r.FormFile("file")

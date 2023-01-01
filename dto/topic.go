@@ -13,3 +13,21 @@ type Topic struct {
 	CreatedBy      int64     `json:"created_by,omitempty"`
 	CreatedAt      time.Time `json:"created_at,omitempty"`
 }
+
+func NewTopic() *Topic {
+	m := new(Media)
+	return &Topic{
+		Media: m,
+	}
+}
+
+/*
+
+{
+	"short_name": "UFF",
+	"name": "Random",
+	"is_nsfw": true,
+	"maximum_threads": 48
+}
+
+*/

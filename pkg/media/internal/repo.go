@@ -2,7 +2,6 @@ package internal
 
 import (
 	"database/sql"
-	"log"
 	"time"
 )
 
@@ -30,12 +29,8 @@ func (mr *mediaRepo) IsBlacklisted(hash string) (bool, error) {
 	var flag bool
 	err := mr.db.QueryRow(blacklistQuery, hash).
 		Scan(&flag)
-	if err != nil {
-		// FIXME: if it's a new record, it is going to return an error.
-		// It has to be detected and handled properly, at the moment it can
-		// be overlooked as a regular sql error or something related with the
-		// database itself.
-		log.Printf("ERROR: %s", err.Error())
+	if err != nil && err != sql.ErrNoRows {
+		return flag, err
 	}
 	return flag, nil
 }

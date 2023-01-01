@@ -18,10 +18,3 @@ type Thread struct {
 	Sticky    bool
 	CreatedAt time.Time
 }
-
-func New() *Thread {
-	m := new(dto.Media)
-	return &Thread{
-		Media: m,
-	}
-}
