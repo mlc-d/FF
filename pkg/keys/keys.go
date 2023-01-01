@@ -78,7 +78,6 @@ const (
 
 // saveKeysToDisk creates two files to store the Private and Public part of an RSA key.
 func saveKeysToDisk(privateKey *rsa.PrivateKey, publicKey *rsa.PublicKey) error {
-	// TODO: handle in case files already exists
 	var privateKeyFile, publicKeyFile *os.File
 	privateKeyFile, err := os.OpenFile(privateKeyFilename, os.O_RDWR|os.O_CREATE, 0600) // (rw-------)
 	if err != nil {
@@ -97,7 +96,7 @@ func saveKeysToDisk(privateKey *rsa.PrivateKey, publicKey *rsa.PublicKey) error 
 		},
 	)
 	publicKeyBytes := x509.MarshalPKCS1PublicKey(publicKey)
-	pubKeyPem := pem.EncodeToMemory(&pem.Block{
+	publicKeyPem := pem.EncodeToMemory(&pem.Block{
 		Type:  "RSA PUBLIC KEY",
 		Bytes: publicKeyBytes,
 	})
@@ -106,6 +105,6 @@ func saveKeysToDisk(privateKey *rsa.PrivateKey, publicKey *rsa.PublicKey) error 
 	if err != nil {
 		return err
 	}
-	_, err = publicKeyFile.Write(pubKeyPem)
+	_, err = publicKeyFile.Write(publicKeyPem)
 	return err
 }

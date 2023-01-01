@@ -14,15 +14,19 @@ var (
 	threadService = thread.NewService()
 )
 
+// Service is the interface used by other packages to interact
+// with the comments in the application
 type Service interface {
 	Post(c *dto.Comment) (*int64, error)
 }
 
+// service private struct implementing the interface Service
 type service struct {
 	repo  internal.CommentRepo
 	media media.Service
 }
 
+// NewService returns a new [Service] interface
 func NewService() Service {
 	return &service{
 		repo:  commentRepo,
@@ -30,6 +34,9 @@ func NewService() Service {
 	}
 }
 
+// Post makes the proper validations on a [dto.Comment] instance,
+// saves the [dto.Comment.Media] and creates the corresponding
+// record in the database.
 func (cs *service) Post(c *dto.Comment) (*int64, error) {
 	comment := new(internal.Comment)
 
@@ -50,6 +57,8 @@ func (cs *service) Post(c *dto.Comment) (*int64, error) {
 	return cs.repo.Post(comment)
 }
 
+// pickColor returns a number between 1 and 8, which are at the
+// same time abstractions to represent colors
 func (cs *service) pickColor() internal.Color {
 	// FIXME: quick way to get a number between 1 and 8. Some colors should
 	// be easier to obtain, so a new method must be implemented to get some
