@@ -9,29 +9,29 @@ var (
 	sqlDB = db.GetDB()
 )
 
-type TopicRepo interface {
-	Post(t *Topic) (*int64, error)
+type Repo interface {
+	Create(t *Topic) (*int64, error)
 }
 
-type topicRepo struct {
+type repo struct {
 	db *sql.DB
 }
 
-func NewTopicRepo() TopicRepo {
-	return &topicRepo{
+func NewRepo() Repo {
+	return &repo{
 		db: sqlDB,
 	}
 }
 
 const (
-	post = `insert into topics (short_name, name, thumbnail_url, is_nsfw, maximum_threads, created_by, created_at) values (?, ?, ?, ?, ?, ?, ?);`
+	post = `insert into topics (short_name, name, media_id, is_nsfw, maximum_threads, created_by, created_at) values (?, ?, ?, ?, ?, ?, ?);`
 )
 
-func (tr *topicRepo) Post(t *Topic) (*int64, error) {
+func (tr *repo) Create(t *Topic) (*int64, error) {
 	result, err := tr.db.Exec(post,
 		t.ShortName,
 		t.Name,
-		t.ThumbnailURL,
+		t.MediaID,
 		t.IsNSFW,
 		t.MaximumThreads,
 		t.CreatedBy,

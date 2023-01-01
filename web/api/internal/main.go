@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	UserService   = user_service.NewUserService()
+	UserService   = user_service.NewService()
 	keys          = keys2.GetKeys()
 	JWTService, _ = jam.New(
 		jam.RS256,

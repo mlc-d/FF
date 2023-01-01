@@ -15,6 +15,7 @@ func Router() *chi.Mux {
 	router.Use(jam.Authenticator)
 
 	router.Post("/thread", CreateThread)
+	router.Post("/topic", CreateTopic)
 
 	return router
 }

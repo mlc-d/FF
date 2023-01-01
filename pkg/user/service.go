@@ -33,7 +33,7 @@ type service struct {
 	repo internal.Repo
 }
 
-func NewUserService() Service {
+func NewService() Service {
 	return &service{
 		repo: userRepo,
 	}

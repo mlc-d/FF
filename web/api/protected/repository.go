@@ -2,10 +2,12 @@ package protected
 
 import (
 	"gitlab.com/mlc-d/ff/pkg/comment"
-	thread_service "gitlab.com/mlc-d/ff/pkg/thread"
+	"gitlab.com/mlc-d/ff/pkg/thread"
+	"gitlab.com/mlc-d/ff/pkg/topic"
 )
 
 var (
-	threadService  = thread_service.NewService()
 	commentService = comment.NewService()
+	threadService  = thread.NewService()
+	topicService   = topic.NewService()
 )

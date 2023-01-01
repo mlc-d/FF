@@ -21,7 +21,7 @@ create table if not exists topics
     id              tinyint unsigned not null auto_increment,
     short_name      varchar(5)       not null unique,
     name            varchar(25)      not null unique,
-    thumbnail_url   varchar(50)      not null unique,
+    media_id        integer unsigned not null unique,
     is_nsfw         boolean          not null default false,
     maximum_threads tinyint          not null default 64,
     created_by      integer unsigned not null,

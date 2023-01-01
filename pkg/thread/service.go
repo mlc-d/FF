@@ -2,7 +2,7 @@ package thread
 
 import (
 	"gitlab.com/mlc-d/ff/dto"
-	mediaService "gitlab.com/mlc-d/ff/pkg/media"
+	"gitlab.com/mlc-d/ff/pkg/media"
 	"gitlab.com/mlc-d/ff/pkg/thread/internal"
 	"time"
 
@@ -15,19 +15,19 @@ type Service interface {
 }
 
 var (
-	repo  = internal.NewRepo()
-	media = mediaService.NewService()
+	tr = internal.NewRepo()
+	ms = media.NewService()
 )
 
 type service struct {
 	repo  internal.Repo
-	media mediaService.Service
+	media media.Service
 }
 
 func NewService() Service {
 	return &service{
-		repo:  repo,
-		media: media,
+		repo:  tr,
+		media: ms,
 	}
 }
 
