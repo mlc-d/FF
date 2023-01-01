@@ -15,7 +15,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte(`cannot decode json payload`))
 		return
 	}
-	id, _, err := internal.UserService.Register(nil)
+	id, _, err := internal.UserService.Register(u)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = w.Write([]byte(err.Error()))

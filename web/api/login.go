@@ -1,8 +1,10 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 	"gitlab.com/mlc-d/ff/dto"
+	"gitlab.com/mlc-d/ff/pkg/errs"
 	"gitlab.com/mlc-d/ff/web/api/internal"
 	"net/http"
 )
@@ -17,6 +19,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	id, role, err := internal.UserService.Login(u)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			err = errs.ErrInvalidCredentials
+		}
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(err.Error()))
 		return

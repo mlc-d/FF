@@ -58,7 +58,7 @@ func (us service) Register(u *dto.User) (*int64, *uint8, error) {
 	return us.repo.Register(user)
 }
 func (us service) Login(u *dto.User) (*int64, *uint8, error) {
-	return us.checkPasswordByNick(u.Nick, u.Password)
+	return us.checkPasswordByNick(strings.ToLower(u.Nick), u.Password)
 }
 
 func (us service) checkPasswordByNick(nick, password string) (*int64, *uint8, error) {
@@ -68,7 +68,7 @@ func (us service) checkPasswordByNick(nick, password string) (*int64, *uint8, er
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(password))
 	if err != nil {
-		return nil, nil, errs.ErrWrongPassword
+		return nil, nil, errs.ErrInvalidCredentials
 	}
 	return id, role, nil
 }
